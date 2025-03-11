@@ -7,7 +7,7 @@ import parser;
 void main()
 {
 
-    string file_name = "./test3.json";
+    string file_name = "../tests/test.json";
     string input = lexer.read_file(file_name);
     auto tokens = lexer.tokenizer(input);
     // foreach (token; tokens)
