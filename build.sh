@@ -1,7 +1,1 @@
-src="./src/*.d"
-bin="./bin/json"
-
-ldc2 -w $src -of=$bin
-
-$bin
-
+ldc2 -w  ./src/lexer.d ./src/main.d ./src/parser.d -of=bin/json && ./bin/json $1

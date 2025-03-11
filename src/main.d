@@ -4,10 +4,10 @@ import std.stdio;
 import lexer;
 import parser;
 
-void main()
+void main(string[] args)
 {
 
-    string file_name = "../tests/test.json";
+    string file_name = args[1];
     string input = lexer.read_file(file_name);
     auto tokens = lexer.tokenizer(input);
     // foreach (token; tokens)
@@ -23,7 +23,7 @@ void main()
     {
         write(key, " -> ", obj.values[key].type);
 
-        //parser.printJSONValue(obj.values[key], 0);
+        //parser.printJSONValue(obj.values[key], 1);
 
         writeln();
     }
