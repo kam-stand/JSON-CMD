@@ -1,0 +1,12 @@
+{
+    "name": "kam",
+    "hobbies": {
+        "sports": false,
+        "games": true,
+        "reading": null,
+        "money":100234,
+        "wife": "unknown"
+    },
+    "array" : [12, "kam", null],
+    "planet": "earth"
+}
