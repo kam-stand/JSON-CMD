@@ -1,1 +1,1 @@
-ldc2 -w  ./src/lexer.d ./src/main.d ./src/parser.d -of=bin/json && ./bin/json $1
+ldc2 -w -wi ./src/*.d -of=bin/json && ./bin/json $1
