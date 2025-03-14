@@ -40,7 +40,7 @@ struct JSON_VALUE
 	}
 }
 
-JSON_OBJECT parseObject(ref TOKEN[] tokens, ref int index)
+JSON_OBJECT parseObject(ref TOKEN* tokens, ref int index)
 {
 	JSON_OBJECT obj;
 	index++; // pass the right bracket
@@ -97,7 +97,7 @@ JSON_OBJECT parseObject(ref TOKEN[] tokens, ref int index)
 	return obj;
 }
 
-JSON_ARRAY parseArray(ref TOKEN[] tokens, ref int index)
+JSON_ARRAY parseArray(ref TOKEN* tokens, ref int index)
 {
 	JSON_ARRAY array;
 	index++;

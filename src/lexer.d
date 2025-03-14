@@ -4,6 +4,9 @@ import std.file;
 import std.string;
 import std.conv;
 import std.ascii;
+import core.stdc.stdlib;
+
+enum DEFAUL_SIZE = 100_000;
 
 enum TOKEN_TYPE
 {
@@ -33,10 +36,12 @@ string read_file(string file_name)
 }
 
 // Tokenizer function
-TOKEN[] tokenizer(ref string contents)
+TOKEN* tokenizer(ref string contents)@nogc
 {
     int index = 0;
-    TOKEN[] tokens;
+    TOKEN[DEFAUL_SIZE] tokens;
+    int current = 0;
+
 
     while (index < contents.length)
     {
@@ -45,39 +50,39 @@ TOKEN[] tokenizer(ref string contents)
         switch (c)
         {
         case '{':
-            tokens ~= TOKEN(TOKEN_TYPE.LEFT_BRACE, "{");
+            tokens[current++] = TOKEN(TOKEN_TYPE.LEFT_BRACE, "{");
             index++;
             break;
         case '}':
-            tokens ~= TOKEN(TOKEN_TYPE.RIGHT_BRACE, "}");
+            tokens[current++]= TOKEN(TOKEN_TYPE.RIGHT_BRACE, "}");
             index++;
             break;
         case '[':
-            tokens ~= TOKEN(TOKEN_TYPE.LEFT_BRACKET, "[");
+            tokens[current++]= TOKEN(TOKEN_TYPE.LEFT_BRACKET, "[");
             index++;
             break;
         case ']':
-            tokens ~= TOKEN(TOKEN_TYPE.RIGHT_BRACKET, "]");
+            tokens[current++]= TOKEN(TOKEN_TYPE.RIGHT_BRACKET, "]");
             index++;
             break;
         case ':':
-            tokens ~= TOKEN(TOKEN_TYPE.COLON, ":");
+            tokens[current++]= TOKEN(TOKEN_TYPE.COLON, ":");
             index++;
             break;
         case ',':
-            tokens ~= TOKEN(TOKEN_TYPE.COMMA, ",");
+            tokens[current++]= TOKEN(TOKEN_TYPE.COMMA, ",");
             index++;
             break;
         case '"': // String parsing
-            tokens ~= lexString(index, contents);
+            tokens[current++]= lexString(index, contents);
             break;
         case 't', 'f', 'n': // Boolean or null
-            tokens ~= lexAlpha(index, contents);
+            tokens[current++]= lexAlpha(index, contents);
             break;
         default:
             if (isDigit(c) || c == '-') // Number parsing (supporting negatives)
             {
-                tokens ~= lexNumber(index, contents);
+                tokens[current++]= lexNumber(index, contents);
             }
             else if (isWhite(c)) // Skip whitespace
             {
@@ -85,32 +90,44 @@ TOKEN[] tokenizer(ref string contents)
             }
             else
             {
-                writeln("Unexpected character: ", c);
+                //writeln("Unexpected character: ", c);
                 index++;
             }
         }
     }
 
-    tokens ~= TOKEN(TOKEN_TYPE.EOF, "EOF");
-    return tokens;
+    tokens[current++] = TOKEN(TOKEN_TYPE.EOF, "EOF");
+    auto slice = tokens.ptr;
+    return slice;
 }
 
-TOKEN lexString(ref int index, ref string contents)
+TOKEN lexString(ref int index, ref string contents) @nogc
 {
-    index++; // Skip initial quote
-    string value = "";
+    // index++; // Skip initial quote
+    // string value = "";
+
+    // while (index < contents.length && contents[index] != '"')
+    // {
+    //     value ~= contents[index];
+    //     index++;
+    // }
+
+    // index++; // Skip closing quote
+    // return TOKEN(TOKEN_TYPE.STRING, value);
+     index++; // Skip initial quote
+    auto start = index;
 
     while (index < contents.length && contents[index] != '"')
     {
-        value ~= contents[index];
         index++;
     }
 
+    auto value = contents[start .. index]; // Slice avoids allocation
     index++; // Skip closing quote
     return TOKEN(TOKEN_TYPE.STRING, value);
 }
 
-TOKEN lexAlpha(ref int index, ref string contents)
+TOKEN lexAlpha(ref int index, ref string contents) @nogc
 {
     string lexeme = "";
     while (index < contents.length && isAlpha(contents[index]))
@@ -127,7 +144,7 @@ TOKEN lexAlpha(ref int index, ref string contents)
     return TOKEN(TOKEN_TYPE.STRING, lexeme);
 }
 
-TOKEN lexNumber(ref int index, ref string contents)
+TOKEN lexNumber(ref int index, ref string contents) @nogc
 {
     string num = "";
     bool hasDecimal = false;

@@ -14,5 +14,5 @@ void main(string[] args)
     int index = 0;
     JSON_OBJECT obj = parser.parseObject(tokens, index);
 
-    query.printValue("mailbox_with_mail", obj);
+
 }

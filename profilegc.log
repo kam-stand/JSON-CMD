@@ -1,0 +1,7 @@
+bytes allocated, allocations, type, function, file:line
+           1344	              9	JSON_VALUE[] parser.parseArray ./src/parser.d:142
+           1088	             68	string parser.indent ./src/parser.d:157
+           1072	             23	string[] parser.parseObject ./src/parser.d:51
+            656	             41	string lexer.lexString ./src/lexer.d:109
+             64	              4	string lexer.lexAlpha ./src/lexer.d:122
+             32	              2	string lexer.lexNumber ./src/lexer.d:147
