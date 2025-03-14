@@ -129,37 +129,68 @@ TOKEN lexString(ref int index, ref string contents) @nogc
 
 TOKEN lexAlpha(ref int index, ref string contents) @nogc
 {
-    string lexeme = "";
+    // string lexeme = "";
+    // while (index < contents.length && isAlpha(contents[index]))
+    // {
+    //     lexeme ~= contents[index];
+    //     index++;
+    // }
+
+    // if (lexeme == "true" || lexeme == "false")
+    //     return TOKEN(TOKEN_TYPE.BOOLEAN, lexeme);
+    // else if (lexeme == "null")
+    //     return TOKEN(TOKEN_TYPE.NULL_TOKEN, lexeme);
+    
+    // return TOKEN(TOKEN_TYPE.STRING, lexeme);
+
+    auto start = index;
+
     while (index < contents.length && isAlpha(contents[index]))
     {
-        lexeme ~= contents[index];
         index++;
     }
+
+    auto lexeme = contents[start .. index]; // Slice instead of concatenation
 
     if (lexeme == "true" || lexeme == "false")
         return TOKEN(TOKEN_TYPE.BOOLEAN, lexeme);
     else if (lexeme == "null")
         return TOKEN(TOKEN_TYPE.NULL_TOKEN, lexeme);
-    
+
     return TOKEN(TOKEN_TYPE.STRING, lexeme);
 }
 
 TOKEN lexNumber(ref int index, ref string contents) @nogc
 {
-    string num = "";
+    // string num = "";
+    // bool hasDecimal = false;
+
+    // while (index < contents.length && (isDigit(contents[index]) || contents[index] == '.'))
+    // {
+    //     if (contents[index] == '.')
+    //     {
+    //         if (hasDecimal) break; 
+    //         hasDecimal = true;
+    //     }
+
+    //     num ~= contents[index];
+    //     index++;
+    // }
+
+    // return TOKEN(TOKEN_TYPE.NUMBER, num);
+    auto start = index;
     bool hasDecimal = false;
 
     while (index < contents.length && (isDigit(contents[index]) || contents[index] == '.'))
     {
         if (contents[index] == '.')
         {
-            if (hasDecimal) break; 
+            if (hasDecimal) break;
             hasDecimal = true;
         }
-
-        num ~= contents[index];
         index++;
     }
 
+    auto num = contents[start .. index]; // Slice avoids allocation
     return TOKEN(TOKEN_TYPE.NUMBER, num);
 }
