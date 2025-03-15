@@ -5,8 +5,9 @@ import std.string;
 import std.conv;
 import std.ascii;
 import core.stdc.stdlib;
+import core.stdc.stdio;
 
-enum DEFAUL_SIZE = 100_000;
+enum DEFAULT_SIZE = 100_000;
 
 enum TOKEN_TYPE
 {
@@ -39,13 +40,17 @@ string read_file(string file_name)
 TOKEN* tokenizer(ref string contents)@nogc
 {
     int index = 0;
-    TOKEN[DEFAUL_SIZE] tokens;
+    TOKEN* tokens = cast(TOKEN *)malloc(TOKEN.sizeof * DEFAULT_SIZE);
     int current = 0;
 
 
     while (index < contents.length)
     {
         char c = contents[index];
+        if (current == DEFAULT_SIZE)
+        {
+          realloc(tokens, DEFAULT_SIZE * 2);   
+        }
 
         switch (c)
         {
@@ -90,30 +95,19 @@ TOKEN* tokenizer(ref string contents)@nogc
             }
             else
             {
-                //writeln("Unexpected character: ", c);
+                printf("Unexpected character: ", c);
                 index++;
             }
         }
     }
 
     tokens[current++] = TOKEN(TOKEN_TYPE.EOF, "EOF");
-    auto slice = tokens.ptr;
-    return slice;
+    return tokens;
 }
 
 TOKEN lexString(ref int index, ref string contents) @nogc
 {
-    // index++; // Skip initial quote
-    // string value = "";
 
-    // while (index < contents.length && contents[index] != '"')
-    // {
-    //     value ~= contents[index];
-    //     index++;
-    // }
-
-    // index++; // Skip closing quote
-    // return TOKEN(TOKEN_TYPE.STRING, value);
      index++; // Skip initial quote
     auto start = index;
 
@@ -129,19 +123,6 @@ TOKEN lexString(ref int index, ref string contents) @nogc
 
 TOKEN lexAlpha(ref int index, ref string contents) @nogc
 {
-    // string lexeme = "";
-    // while (index < contents.length && isAlpha(contents[index]))
-    // {
-    //     lexeme ~= contents[index];
-    //     index++;
-    // }
-
-    // if (lexeme == "true" || lexeme == "false")
-    //     return TOKEN(TOKEN_TYPE.BOOLEAN, lexeme);
-    // else if (lexeme == "null")
-    //     return TOKEN(TOKEN_TYPE.NULL_TOKEN, lexeme);
-    
-    // return TOKEN(TOKEN_TYPE.STRING, lexeme);
 
     auto start = index;
 
@@ -162,22 +143,6 @@ TOKEN lexAlpha(ref int index, ref string contents) @nogc
 
 TOKEN lexNumber(ref int index, ref string contents) @nogc
 {
-    // string num = "";
-    // bool hasDecimal = false;
-
-    // while (index < contents.length && (isDigit(contents[index]) || contents[index] == '.'))
-    // {
-    //     if (contents[index] == '.')
-    //     {
-    //         if (hasDecimal) break; 
-    //         hasDecimal = true;
-    //     }
-
-    //     num ~= contents[index];
-    //     index++;
-    // }
-
-    // return TOKEN(TOKEN_TYPE.NUMBER, num);
     auto start = index;
     bool hasDecimal = false;
 

@@ -3,6 +3,8 @@ import std.stdio;
 import lexer;
 import std.conv : to;
 import std.string;
+import core.memory;
+
 
 enum JSON_TYPE
 {
@@ -40,7 +42,7 @@ struct JSON_VALUE
 	}
 }
 
-JSON_OBJECT parseObject(ref TOKEN* tokens, ref int index)
+JSON_OBJECT parseObject(ref TOKEN* tokens, ref int index) 
 {
 	JSON_OBJECT obj;
 	index++; // pass the right bracket
@@ -94,10 +96,11 @@ JSON_OBJECT parseObject(ref TOKEN* tokens, ref int index)
 			index++;
 		}
 	}
+	GC.collect();
 	return obj;
 }
 
-JSON_ARRAY parseArray(ref TOKEN* tokens, ref int index)
+JSON_ARRAY parseArray(ref TOKEN* tokens, ref int index) 
 {
 	JSON_ARRAY array;
 	index++;
@@ -145,11 +148,12 @@ JSON_ARRAY parseArray(ref TOKEN* tokens, ref int index)
 			index++;
 		}
 	}
+
 	return array;
 
 }
 
-string indent(int level, string indentString = "  ")
+string indent(int level, string indentString = "  ") 
 {
 	string result = "";
 	for (int i = 0; i < level; ++i)
@@ -159,7 +163,7 @@ string indent(int level, string indentString = "  ")
 	return result;
 }
 
-void printJSONValue(in JSON_VALUE value, int indentLevel = 0)
+void printJSONValue(in JSON_VALUE value, int indentLevel = 0) 
 {
 	string indentation = indent(indentLevel);
 
@@ -217,7 +221,7 @@ void printJSONValue(in JSON_VALUE value, int indentLevel = 0)
 	}
 }
 
-void printObj(in JSON_OBJECT obj)
+void printObj(in JSON_OBJECT obj) 
 {
 	writeln("{");
 	foreach (key, val; obj.values)
